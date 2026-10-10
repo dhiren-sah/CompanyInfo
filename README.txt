@@ -44,3 +44,9 @@ IMPORT FORMAT SUPPORT (v7)
 - Import CSV files (.csv) directly.
 - Import Excel workbooks (.xlsx, .xls) from the first worksheet. Excel import loads SheetJS from jsDelivr, so an internet connection is needed for Excel files. CSV import works without that library.
 - Required column headers: Symbol and Company Name. Other headers should match the dashboard data columns.
+
+
+TABLE UPDATE — v8
+- Company Universe now displays Revenue (Cr), Profit (Cr), and Loan / Debt (Cr) in that order.
+- Existing profile details, filters, watchlist, notes, CSV/Excel import, hosted CSV refresh, and exports retained.
+- The company table scrolls horizontally on smaller screens to keep columns readable.
