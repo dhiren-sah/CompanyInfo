@@ -46,7 +46,7 @@ a{color:var(--blue)}
 .chip{border:1px solid #30415d;border-radius:99px;padding:7px 10px;color:var(--muted);background:#101b2e;font-size:11px;white-space:nowrap}
 .chip.active{background:#1d3760;color:#e6efff;border-color:#4f80c4}
 .tablewrap{overflow:auto;max-height:640px;border-radius:8px}
-.company-table{width:100%;border-collapse:collapse;min-width:505px}
+.company-table{width:100%;border-collapse:collapse;min-width:650px}
 .company-table th{text-align:left;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:10px 7px;position:sticky;top:0;background:#111b2e;z-index:1}
 .company-table td{padding:11px 7px;border-top:1px solid #22314a;font-size:12px;vertical-align:middle}
 .company-table tbody tr{cursor:pointer}
@@ -114,7 +114,7 @@ a{color:var(--blue)}
  .chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;margin-right:-2px}
  .chip{flex:0 0 auto;font-size:10px;padding:7px 10px}
  .tablewrap{max-height:440px;margin:0 -2px}
- .company-table{min-width:490px}
+ .company-table{min-width:620px}
  .company-table th{font-size:9px;padding:9px 7px}
  .company-table td{padding:11px 7px;font-size:11px}
  .co-name{max-width:170px}
@@ -182,7 +182,7 @@ a{color:var(--blue)}
   <div class="panel-body">
    <div class="filters"><input id="search" class="field" placeholder="Search company name or symbol…" aria-label="Search company"><select id="typeFilter" class="field" aria-label="Filter by company type"><option value="">All types</option></select></div>
    <div class="chips"><button class="chip active" data-filter="all">All companies</button><button class="chip" data-filter="profit">Positive profit</button><button class="chip" data-filter="loss">Loss-making</button><button class="chip" data-filter="watch">Watchlist</button></div>
-   <div class="tablewrap"><table class="company-table"><thead><tr><th>Company / Symbol</th><th>Type</th><th class="num">Profit (Cr)</th><th class="num">Debt (Cr)</th><th></th></tr></thead><tbody id="companyRows"></tbody></table></div>
+   <div class="tablewrap"><table class="company-table"><thead><tr><th>Company / Symbol</th><th>Type</th><th class="num">Revenue (Cr)</th><th class="num">Profit (Cr)</th><th class="num">Loan / Debt (Cr)</th><th></th></tr></thead><tbody id="companyRows"></tbody></table></div>
   </div>
  </section>
  <section class="panel" id="detailPanel"><div class="detail-empty"><div><div class="empty-icon">⌕</div><div class="panel-title">Select a company</div><p>Open any company to review its profile, ratios, source and monitoring notes.</p></div></div></section>
@@ -269,7 +269,7 @@ function renderRows(){
  if(activeFilter==="loss")list=list.filter(c=>profit(c)!==null&&profit(c)<0);
  if(activeFilter==="watch")list=list.filter(c=>watch.has(keyOf(c)));
  document.getElementById("resultCount").textContent=`${list.length} of ${companies.length} companies`;
- document.getElementById("companyRows").innerHTML=list.map(c=>`<tr data-symbol="${safe(keyOf(c))}" class="${selected&&keyOf(selected)===keyOf(c)?"selected":""}"><td><div class="co-name">${safe(c["Company Name"])}</div><div class="symbol">${safe(symbolOf(c))}</div></td><td><span class="tag">${safe(c.Type||"Unclassified")}</span></td><td class="num ${(profit(c)||0)<0?"neg":"pos"}">${money(profit(c))}</td><td class="num">${money(debt(c))}</td><td><button class="watch-star ${watch.has(keyOf(c))?"on":""}" title="Toggle watchlist" aria-label="Toggle watchlist">${watch.has(keyOf(c))?"★":"☆"}</button></td></tr>`).join("")||'<tr><td colspan="5" class="muted">No companies match these filters.</td></tr>';
+ document.getElementById("companyRows").innerHTML=list.map(c=>`<tr data-symbol="${safe(keyOf(c))}" class="${selected&&keyOf(selected)===keyOf(c)?"selected":""}"><td><div class="co-name">${safe(c["Company Name"])}</div><div class="symbol">${safe(symbolOf(c))}</div></td><td><span class="tag">${safe(c.Type||"Unclassified")}</span></td><td class="num">${money(revenue(c))}</td><td class="num ${(profit(c)||0)<0?"neg":"pos"}">${money(profit(c))}</td><td class="num">${money(debt(c))}</td><td><button class="watch-star ${watch.has(keyOf(c))?"on":""}" title="Toggle watchlist" aria-label="Toggle watchlist">${watch.has(keyOf(c))?"★":"☆"}</button></td></tr>`).join("")||'<tr><td colspan="6" class="muted">No companies match these filters.</td></tr>';
  document.querySelectorAll("#companyRows tr[data-symbol]").forEach(tr=>{tr.onclick=()=>{const c=companies.find(x=>keyOf(x)===tr.dataset.symbol);if(c)selectCompany(c)};const star=tr.querySelector(".watch-star");if(star)star.onclick=e=>{e.stopPropagation();const c=companies.find(x=>keyOf(x)===tr.dataset.symbol);if(!c)return;const k=keyOf(c);watch.has(k)?watch.delete(k):watch.add(k);save();updateWatchStat();renderRows();if(selected&&keyOf(selected)===k)renderDetail()}});
 }
 function updateWatchStat(){document.getElementById("watchStat").textContent=watch.size}
